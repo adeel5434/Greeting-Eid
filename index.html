@@ -60,15 +60,32 @@
             animation: float 6s ease-in-out infinite;
         }
         
+        .video-container {
+            width: 100%;
+            height: 250px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            transition: transform 0.3s;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
         }
         
-        .student-photo:nth-child(1) { animation-delay: 0s; }
-        .student-photo:nth-child(2) { animation-delay: 1s; }
+        .student-photo:nth-child(1), .video-container:nth-child(1) { animation-delay: 0s; }
+        .student-photo:nth-child(2), .video-container:nth-child(2) { animation-delay: 1s; }
         
-        .student-photo:hover {
+        .student-photo:hover, .video-container:hover {
             transform: scale(1.03) translateY(-5px);
             animation-play-state: paused;
         }
@@ -84,7 +101,7 @@
             transform: scale(1.1);
         }
         
-        .student-photo::after {
+        .student-photo::after, .video-container::after {
             content: 'Our Stars ✨';
             position: absolute;
             bottom: 0;
@@ -100,7 +117,7 @@
             transition: all 0.3s;
         }
         
-        .student-photo:hover::after {
+        .student-photo:hover::after, .video-container:hover::after {
             background: rgba(0,0,0,0.8);
             padding: 15px;
         }
@@ -161,16 +178,16 @@
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             position: relative;
-            animation: rotate 20s linear infinite;
+            animation: pulse-grow 2s infinite alternate;
         }
         
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes pulse-grow {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
         }
         
         .photo-frame:hover {
-            animation: rotate 5s linear infinite;
+            animation: pulse-grow 0.5s infinite alternate;
         }
         
         .message {
@@ -281,14 +298,14 @@
                 justify-content: center;
             }
             
-            .student-photo {
+            .student-photo, .video-container {
                 width: calc(50% - 10px);
                 height: 200px;
             }
         }
 
         @media (max-width: 480px) {
-            .student-photo {
+            .student-photo, .video-container {
                 width: 100%;
                 height: 220px;
             }
@@ -323,10 +340,13 @@
         <!-- Left Photo Column -->
         <div class="photo-column">
             <div class="student-photo">
-                <img src="https://images.unsplash.com/photo-1588072432836-e10032774350?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80" alt="Happy Students" loading="lazy">
+                <img src="img1 (1).jpg" alt="Student activity" loading="lazy">
             </div>
-            <div class="student-photo">
-                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Classroom Learning" loading="lazy">
+            <div class="video-container">
+                <video autoplay loop muted playsinline>
+                    <source src="img4.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
         </div>
         
@@ -335,7 +355,7 @@
             <div class="header">
                 <h1 class="school-name">Maymar-e-Noe Academy</h1>
                 <div class="photo-frame">
-                    <img src="WhatsApp_Image_2025-03-25_at_02.33.08_673a5238-removebg-preview.png" style="width:100%; height:100%; object-fit:cover;" loading="eager">
+                    <img src="WhatsApp_Image_2025-03-25_at_02.33.08_673a5238-removebg-preview.png" style="width:100%; height:100%; object-fit:cover;" loading="eager" alt="School Logo">
                 </div>
                 <h2 style="color: var(--secondary); font-family: 'Merriweather', serif; font-size: 2rem;">Eid Mubarak 2025</h2>
             </div>
@@ -360,10 +380,13 @@
         <!-- Right Photo Column -->
         <div class="photo-column">
             <div class="student-photo">
-                <img src="img1 (1).jpg" alt="School Event" loading="lazy">
+                <img src="img1 (2).jpg" alt="School event" loading="lazy">
             </div>
-            <div class="student-photo">
-                <img src="img1 (2).jpg" alt="Graduation" loading="lazy">
+            <div class="video-container">
+                <video autoplay loop muted playsinline>
+                    <source src="img3.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
         </div>
     </div>
@@ -402,11 +425,33 @@
             const card = document.querySelector('.card');
             card.style.animation = 'pulse 0.5s 3';
             
+            // Add special effect to logo
+            const logo = document.querySelector('.photo-frame');
+            logo.style.animation = 'pulse-grow 0.3s 3';
+            
             setTimeout(() => {
                 celebrateBtn.innerHTML = '🎊 Celebrate Again! 🎊';
                 celebrateBtn.style.background = 'linear-gradient(45deg, var(--secondary), var(--primary))';
                 card.style.animation = 'pulse 3s infinite';
+                logo.style.animation = 'pulse-grow 2s infinite alternate';
             }, 2000);
+        });
+        
+        // Auto-play videos when they're visible
+        const videos = document.querySelectorAll('video');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.play();
+                } else {
+                    entry.target.pause();
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        videos.forEach(video => {
+            observer.observe(video);
         });
     </script>
 </body>
